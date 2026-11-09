@@ -15,11 +15,15 @@ ROOT = Path(__file__).resolve().parents[1]
 HELM = os.environ.get("HELM_BIN") or shutil.which("helm")
 BASH = os.environ.get("BASH_BIN") or shutil.which("bash")
 CHART = ROOT / "containerized/online-install/openan-chart"
+# BASE pins HTTPS off so the protocol-matrix tests exercise explicit toggle.
+# A separate test (test_https_is_enabled_by_default) locks the chart default.
 BASE = {"registry.image.tag": "contract", "orchestration.image.tag": "contract",
         "frontend.type": "workflow-designer", "frontend.image.tag": "contract",
         "postgresql.existingSecret": "postgres-secret", "registry.runtimeSecret": "rc-runtime",
         "registry.credentialSecret": "rc-credentials", "orchestration.runtimeSecret": "oc-runtime",
-        "registry.signing.mode": "off"}
+        "registry.signing.mode": "off",
+        "registry.tls.enabled": False, "orchestration.tls.enabled": False,
+        "ingress.tls.enabled": False}
 
 
 def render(settings=None, success=True):
